@@ -42,7 +42,7 @@ const isDirectory = (target: string): boolean => {
 };
 
 /**
- * Deep explore folders for PDF file
+ * Explore folders recursively for PDF file
  */
 const explore = (target: string, files: PathLike[] = []): PathLike[] => {
   if (!isDirectory(target)) return extname(target) === '.pdf' ? [...files, target] : files;

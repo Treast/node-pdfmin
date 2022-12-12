@@ -38,7 +38,7 @@ const isDirectory = (target) => {
     return fs_1.statSync(target).isDirectory();
 };
 /**
- * Deep explore folders for PDF file
+ * Explore folders recursively for PDF file
  */
 const explore = (target, files = []) => {
     if (!isDirectory(target))
