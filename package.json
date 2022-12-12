@@ -1,0 +1,16 @@
+{
+  "name": "pdfmin",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "description": "A CLI tool to compress PDF using GhostScript",
+  "repository": "https://github.com/Treast/node-pdfmin",
+  "author": "Vincent Riva <vincent.riva@outlook.fr>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
