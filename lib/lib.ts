@@ -8,12 +8,12 @@ import { join, extname, basename, dirname, sep } from 'path';
  * Check if path passed as argument is set
  * @returns Promise<string> Path
  */
-export const checkArgs = (): Promise<string> => {
+export const checkArgs = (): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     const target = argv[2];
     if (!target) reject('Please specify which file/folder you want to compress (npx pdfmin myFile.pdf).');
 
-    resolve(target);
+    resolve(argv.slice(2));
   });
 };
 

@@ -26,7 +26,8 @@ test('get the file to compress from argument', async () => {
   process.argv = ['node', 'jest', filePath];
   const target = await checkArgs();
 
-  expect(target).toBe(filePath);
+  expect(target).toContain(filePath);
+  expect(target.length).toBe(1);
 });
 
 test('explore and extract correct PDF files', async () => {

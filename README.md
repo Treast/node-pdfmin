@@ -29,8 +29,20 @@ Install GhostScript using the installer.
 npx pdfmin ./myFile.pdf
 ```
 
-### Compress all PDF inside a folder
+### Compress multiple specific PDF
+
+```shell
+npx pdfmin ./myFile.pdf ./myFile2.pdf
+```
+
+### Compress all PDF in a folder
 
 ```shell
 npx pdfmin ./myFolder/
+```
+
+### Compress all PDF in multiple folders
+
+```shell
+npx pdfmin ./myFolder/ ./myFolder2/
 ```
