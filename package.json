@@ -1,13 +1,17 @@
 {
   "name": "pdfmin",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "/dist"
   ],
+  "bin": {
+    "pdfmin": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --watch",
     "test": "jest"
   },
   "description": "A CLI tool to compress PDF using GhostScript",
