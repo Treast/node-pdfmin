@@ -1,6 +1,7 @@
 # pdfmin
 
 ![CI Status](https://github.com/Treast/node-pdfmin/actions/workflows/node.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/Treast/node-pdfmin/badge.svg?branch=main)](https://coveralls.io/github/Treast/node-pdfmin?branch=main)
 
 **pdfmin** is a CLI tool to compress PDF using GhostScript.
 
