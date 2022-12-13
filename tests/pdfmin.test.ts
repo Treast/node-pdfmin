@@ -28,8 +28,15 @@ test('explore and extract correct PDF files', async () => {
   const regex2 = `folders${sep}nested_folder${sep}PlaceholderPDF.pdf`;
 
   expect(files.length).toBe(2);
-  expect(files[0]).toMatch(new RegExp(escapeRegExp(regex2)));
-  expect(files[1]).toMatch(new RegExp(escapeRegExp(regex1)));
+
+  // Order is defined by OS, so you check which file is the deepest by length of the path
+  if (files[0].toString().length > files[1].toString().length) {
+    expect(files[0]).toMatch(new RegExp(escapeRegExp(regex2)));
+    expect(files[1]).toMatch(new RegExp(escapeRegExp(regex1)));
+  } else {
+    expect(files[0]).toMatch(new RegExp(escapeRegExp(regex1)));
+    expect(files[1]).toMatch(new RegExp(escapeRegExp(regex2)));
+  }
 });
 
 test('explore a single PDF file directly', async () => {
