@@ -1,14 +1,14 @@
 import { platform } from 'os';
 import { join, sep } from 'path';
 import { existsSync, rmSync, statSync } from 'fs';
-import { checkCommand, explore, runGhostScript } from '../lib/lib';
+import { checkArgs, checkCommand, explore, runGhostScript } from '../lib/lib';
 
 // https://stackoverflow.com/a/6969486
 const escapeRegExp = (regex: string): string => {
   return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 };
 
-jest.setTimeout(30000); // Compress can be long depending of the PDF
+jest.setTimeout(20000); // Compress can be long depending of the PDF
 
 test('get the correct Ghostscript command', async () => {
   const command = await checkCommand();
@@ -18,6 +18,15 @@ test('get the correct Ghostscript command', async () => {
   } else {
     expect(command).toBe('gs');
   }
+});
+
+test('get the file to compress from argument', async () => {
+  const filePath = join(__dirname, 'folders', 'PlaceholderPDF.pdf');
+
+  process.argv = ['node', 'jest', filePath];
+  const target = await checkArgs();
+
+  expect(target).toBe(filePath);
 });
 
 test('explore and extract correct PDF files', async () => {
@@ -61,6 +70,19 @@ test('compress PDF', async () => {
   expect(result).toBeTruthy();
   expect(existsSync(resultPath)).toBeTruthy();
   expect(statSync(filePath).size).toBeGreaterThan(statSync(resultPath).size);
+});
+
+test("error if command doesn't exist", async () => {
+  const command = 'commandThatDoesntExist';
+  const filePath = join(__dirname, 'folders', 'PlaceholderPDF.pdf');
+  const files = await explore(filePath);
+
+  return expect(runGhostScript(command, files[0].toString())).rejects.toMatch('Error while using GhostScript CLI.');
+});
+
+test('error if no argument is sent', async () => {
+  process.argv = ['node', 'jest'];
+  return expect(checkArgs()).rejects.toMatch('Please specify which file/folder you want to compress (npx pdfmin myFile.pdf).');
 });
 
 /**

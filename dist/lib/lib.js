@@ -27,6 +27,7 @@ const checkCommand = () => {
     return new Promise((resolve, reject) => {
         const commands = ['gs', 'gswin32c', 'gswin64c', 'gsos2'];
         const availableCommands = commands.filter(command_exists_1.sync);
+        /* istanbul ignore next */
         if (!availableCommands[0])
             reject('Ghostscript is not installed on your device.');
         resolve(availableCommands[0]);
@@ -46,6 +47,7 @@ exports.isDirectory = isDirectory;
  * Explore folders recursively for PDF file
  */
 const explore = (target, files = []) => {
+    /* istanbul ignore next */
     if (!(0, exports.isDirectory)(target))
         return (0, path_1.extname)(target) === '.pdf' ? [...files, target] : files;
     // Loop for each file on directory
@@ -77,8 +79,8 @@ const runGhostScript = (command, file) => {
             `-sOutputFile=${fileDirname}${fileBasename}_compressed.pdf`,
             file,
         ]);
-        gs.stderr.on('data', (data) => {
-            reject(data);
+        gs.on('error', () => {
+            reject('Error while using GhostScript CLI.');
         });
         gs.on('close', () => {
             resolve(true);
