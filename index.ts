@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { sync as commandExists } from 'command-exists';
 import { argv } from 'process';
 import { PathLike, statSync, readdirSync } from 'fs';
-import { join, extname } from 'path';
+import { join, extname, basename, dirname, sep } from 'path';
 
 /**
  * Check if path passed as argument is set
@@ -56,11 +56,48 @@ const explore = (target: string, files: PathLike[] = []): PathLike[] => {
     .flat(2);
 };
 
+/**
+ * Run the Ghostscript command
+ * @param command Ghostcript command to use
+ * @param file PDF File to compress
+ * @returns Promise<boolean,string> True if Ghostcript has finished, error message otherwise
+ */
+const runGhostScript = (command: string, file: string) => {
+  return new Promise((resolve, reject) => {
+    const fileBasename = basename(file, extname(file));
+    const fileDirname = dirname(file) + sep;
+
+    const gs = spawn(command, [
+      '-sDEVICE=pdfwrite',
+      '-dCompatibilityLevel=1.4',
+      '-dPDFSETTINGS=/screen',
+      '-dNOPAUSE',
+      '-dQUIET',
+      '-dBATCH',
+      `-sOutputFile=${fileDirname}${fileBasename}_compressed.pdf`,
+      file,
+    ]);
+
+    gs.stderr.on('data', (data) => {
+      reject(data);
+    });
+
+    gs.on('close', () => {
+      resolve(true);
+    });
+  });
+};
+
 Promise.all([checkArgs(), checkCommand()])
-  .then(([target, command]) => {
+  .then(async ([target, command]) => {
     const targetPath = join(process.cwd(), target);
     const files = explore(targetPath);
-    console.log(files);
+
+    for (let file of files) {
+      await runGhostScript(command, file.toString());
+    }
+
+    console.log('✨ PDF has been compressed !');
   })
   .catch((err) => {
     throw new Error(err);

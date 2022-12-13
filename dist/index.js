@@ -1,5 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const child_process_1 = require("child_process");
 const command_exists_1 = require("command-exists");
 const process_1 = require("process");
 const fs_1 = require("fs");
@@ -51,12 +61,43 @@ const explore = (target, files = []) => {
     })
         .flat(2);
 };
+/**
+ * Run the Ghostscript command
+ * @param command Ghostcript command to use
+ * @param file PDF File to compress
+ * @returns Promise<boolean,string> True if Ghostcript has finished, error message otherwise
+ */
+const runGhostScript = (command, file) => {
+    return new Promise((resolve, reject) => {
+        const fileBasename = path_1.basename(file, path_1.extname(file));
+        const fileDirname = path_1.dirname(file) + path_1.sep;
+        const gs = child_process_1.spawn(command, [
+            '-sDEVICE=pdfwrite',
+            '-dCompatibilityLevel=1.4',
+            '-dPDFSETTINGS=/screen',
+            '-dNOPAUSE',
+            '-dQUIET',
+            '-dBATCH',
+            `-sOutputFile=${fileDirname}${fileBasename}_compressed.pdf`,
+            file,
+        ]);
+        gs.stderr.on('data', (data) => {
+            reject(data);
+        });
+        gs.on('close', () => {
+            resolve(true);
+        });
+    });
+};
 Promise.all([checkArgs(), checkCommand()])
-    .then(([target, command]) => {
+    .then(([target, command]) => __awaiter(void 0, void 0, void 0, function* () {
     const targetPath = path_1.join(process.cwd(), target);
     const files = explore(targetPath);
-    console.log(files);
-})
+    for (let file of files) {
+        yield runGhostScript(command, file.toString());
+    }
+    console.log('✨ PDF has been compressed !');
+}))
     .catch((err) => {
     throw new Error(err);
 });
