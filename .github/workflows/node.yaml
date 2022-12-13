@@ -18,6 +18,8 @@ jobs:
           node-version: '19.x'
       - name: Install GhostScript
         run: sudo apt-get install -y ghostscript
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+      - name: Install Yarn globally
+        run: npm install --global yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - run: yarn test
