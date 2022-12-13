@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import { join } from 'path';
 import { checkArgs, checkCommand, runGhostScript, explore } from './lib/lib';
 
@@ -10,8 +12,9 @@ Promise.all([checkArgs(), checkCommand()])
       await runGhostScript(command, file.toString());
     }
 
-    console.log('✨ PDF has been compressed !');
+    console.log('\x1b[32m%s\x1b[0m', '✨ PDF has been compressed !');
   })
   .catch((err) => {
-    throw new Error(err);
+    console.error(`\x1b[31m${err}\x1b[0m`);
+    process.exit(1);
   });

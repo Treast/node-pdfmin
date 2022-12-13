@@ -39,20 +39,20 @@ exports.checkCommand = checkCommand;
  * @returns boolean True if path is a directory
  */
 const isDirectory = (target) => {
-    return fs_1.statSync(target).isDirectory();
+    return (0, fs_1.statSync)(target).isDirectory();
 };
 exports.isDirectory = isDirectory;
 /**
  * Explore folders recursively for PDF file
  */
 const explore = (target, files = []) => {
-    if (!exports.isDirectory(target))
-        return path_1.extname(target) === '.pdf' ? [...files, target] : files;
+    if (!(0, exports.isDirectory)(target))
+        return (0, path_1.extname)(target) === '.pdf' ? [...files, target] : files;
     // Loop for each file on directory
-    return fs_1.readdirSync(target)
+    return (0, fs_1.readdirSync)(target)
         .map((file) => {
-        const filePath = path_1.join(target, file);
-        return exports.explore(filePath, files);
+        const filePath = (0, path_1.join)(target, file);
+        return (0, exports.explore)(filePath, files);
     })
         .flat(2);
 };
@@ -65,9 +65,9 @@ exports.explore = explore;
  */
 const runGhostScript = (command, file) => {
     return new Promise((resolve, reject) => {
-        const fileBasename = path_1.basename(file, path_1.extname(file));
-        const fileDirname = path_1.dirname(file) + path_1.sep;
-        const gs = child_process_1.spawn(command, [
+        const fileBasename = (0, path_1.basename)(file, (0, path_1.extname)(file));
+        const fileDirname = (0, path_1.dirname)(file) + path_1.sep;
+        const gs = (0, child_process_1.spawn)(command, [
             '-sDEVICE=pdfwrite',
             '-dCompatibilityLevel=1.4',
             '-dPDFSETTINGS=/screen',
