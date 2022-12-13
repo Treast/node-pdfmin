@@ -3,7 +3,7 @@ import { PathLike } from 'fs';
  * Check if path passed as argument is set
  * @returns Promise<string> Path
  */
-export declare const checkArgs: () => Promise<string>;
+export declare const checkArgs: () => Promise<string[]>;
 /**
  * Check if Ghostscript is installed globally on device
  * @returns Promise<string> GhostScript command to use
